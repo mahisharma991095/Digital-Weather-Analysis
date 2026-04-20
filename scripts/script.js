@@ -159,14 +159,22 @@ cityInput.addEventListener("keyup", function (event) {
             return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           };
 
-          // Fetch AQI
-          fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`)
-            .then(res => res.json())
-            .then(pollutionData => {
-              const aqi = pollutionData.list[0].main.aqi;
-              const aqiLevels = ["Good", "Fair", "Moderate", "Poor", "Very Poor"];
-              document.querySelector(".air-quality-index-additional-value").innerHTML = aqiLevels[aqi - 1];
-            });
+           // Fetch AQI & Life Analysis
+           fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`)
+             .then(res => res.json())
+             .then(pollutionData => {
+               const aqi = pollutionData.list[0].main.aqi;
+               const aqiLevels = ["Good", "Fair", "Moderate", "Poor", "Very Poor"];
+               
+               // Update AQI in UI
+               const aqiElement = document.getElementById("aqiAdditionalValue") || document.querySelector(".air-quality-index-additional-value");
+               if (aqiElement) aqiElement.innerHTML = aqiLevels[aqi - 1];
+
+               // 🏥 Update Life & Health Analysis
+               if (typeof updateLifeAnalysis === 'function') {
+                  updateLifeAnalysis(Math.round(temperature), humidity, weatherType.toLowerCase(), aqi);
+               }
+             });
 
           document.getElementById("locationName").innerHTML = location;
           document.getElementById("temperatureValue").innerHTML = Math.round(temperature) + "<sup>o</sup>C";
@@ -181,6 +189,9 @@ cityInput.addEventListener("keyup", function (event) {
           document.getElementById("humidityAdditionalValue").innerHTML = humidity + "%";
           document.getElementById("sunriseAdditionalValue").innerHTML = formatTime(sunrise);
           document.getElementById("sunsetAdditionalValue").innerHTML = formatTime(sunset);
+
+          // ⚡ Power Analysis
+          updatePowerAnalysis(Math.round(temperature));
 
           // Update main weather icon
           const iconCode = data.weather[0].icon;
@@ -207,6 +218,10 @@ cityInput.addEventListener("keyup", function (event) {
           document.getElementById("locationName").innerHTML = "City Not Found";
           document.getElementById("temperatureValue").innerHTML = "";
           document.getElementById("weatherType").innerHTML = "";
+          // Reset Power Analysis on error
+          document.getElementById("powerDeviceIcon").textContent = "❓";
+          document.getElementById("powerDeviceName").textContent = "Analysis Unavailable";
+          document.getElementById("powerMeterFill").style.width = "0%";
         }
       }
 
@@ -229,22 +244,32 @@ document.getElementById("resetBtn").addEventListener("click", function (event) {
   document.getElementById("weatherType").innerHTML = "";
 
   // Reset additional weather details
-  document.getElementById("realFeelAdditionalValue").innerHTML = "";
-  document.getElementById("windSpeedAdditionalValue").innerHTML = "";
-  document.getElementById("windDirectionAdditionalValue").innerHTML = "";
-  document.getElementById("visibilityAdditionalValue").innerHTML = "";
-  document.getElementById("pressureAdditionalValue").innerHTML = "";
-  document.getElementById("maxTemperatureAdditionalValue").innerHTML = "";
-  document.getElementById("minTemperatureAdditionalValue").innerHTML = "";
-  document.getElementById("humidityAdditionalValue").innerHTML = "";
-  document.getElementById("sunriseAdditionalValue").innerHTML = "";
-  document.getElementById("sunsetAdditionalValue").innerHTML = "";
+  document.getElementById("realFeelAdditionalValue").innerHTML = "-";
+  document.getElementById("windSpeedAdditionalValue").innerHTML = "-";
+  document.getElementById("windDirectionAdditionalValue").innerHTML = "-";
+  document.getElementById("visibilityAdditionalValue").innerHTML = "-";
+  document.getElementById("pressureAdditionalValue").innerHTML = "-";
+  document.getElementById("maxTemperatureAdditionalValue").innerHTML = "-";
+  document.getElementById("minTemperatureAdditionalValue").innerHTML = "-";
+  document.getElementById("humidityAdditionalValue").innerHTML = "-";
+  document.getElementById("sunriseAdditionalValue").innerHTML = "-";
+  document.getElementById("sunsetAdditionalValue").innerHTML = "-";
+  document.getElementById("aqiAdditionalValue").innerHTML = "-";
+
+  // Reset Power Analysis
+  document.getElementById("powerDeviceIcon").textContent = "❓";
+  document.getElementById("powerDeviceName").textContent = "Search a city to see analysis";
+  document.getElementById("powerDeviceStatus").textContent = "—";
+  document.getElementById("powerBadge").textContent = "—";
+  document.getElementById("powerBadge").className = "power-badge";
+  document.getElementById("powerMeterFill").style.width = "0%";
+  document.getElementById("powerAnalysisMsg").textContent = "—";
 
   // Clear forecast cards
   document.getElementById("forecast-container").innerHTML = "";
 
   // Optionally show default message
-  document.getElementById("locationName").innerHTML = "Enter a city to get weather details";
+  document.getElementById("locationName").innerHTML = "Search City...";
 });
 
 // Star Button Functionality
@@ -253,30 +278,37 @@ document.getElementById("starBtn").addEventListener("click", function (event) {
   const icon = this.innerHTML;
   if (icon === "☆") {
     this.innerHTML = "★";
-    this.style.color = "#ffcc00"; // Gold color for filled star
+    this.style.color = "#ffcc00"; 
   } else {
     this.innerHTML = "☆";
     this.style.color = "#fff";
   }
 });
 
+// Initialize all sections with their default "Search a city" states
+window.onload = () => {
+  if (typeof updatePowerAnalysis === 'function') updatePowerAnalysis();
+  if (typeof updateLifeAnalysis === 'function') updateLifeAnalysis();
+};
+
 // More Button (Settings/About) Functionality
 const modal = document.getElementById("aboutModal");
 const btn = document.getElementById("moreBtn");
 const span = document.getElementsByClassName("close")[0];
 
-btn.onclick = function(event) {
+btn.onclick = function (event) {
   event.preventDefault();
   modal.style.display = "block";
 }
 
-span.onclick = function() {
+span.onclick = function () {
   modal.style.display = "none";
 }
 
-window.onclick = function(event) {
+window.onclick = function (event) {
   if (event.target == modal) {
     modal.style.display = "none";
   }
 }
+
 
