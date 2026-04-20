@@ -16,6 +16,15 @@ body {
   margin: 0;
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  transition: background 1s ease-in-out;
 }
 
 #loader1,
@@ -101,15 +110,23 @@ ul {
 .search-city {
   letter-spacing: 0.50px;
   padding-left: 20px;
-  background: rgba(0, 0, 0, 0.50);
-  border: none;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
   border-radius: 50px;
   outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-city:focus {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  width: 28vw;
 }
 
 .navbar a:hover:not(.repo-link) {
-  background: #000;
+  background: rgba(255, 255, 255, 0.1);
   transition: 0.3s;
   border-radius: 5px;
 }
@@ -118,17 +135,39 @@ ul {
   font-weight: 400;
   text-align: center;
   color: #fff;
+  margin-top: 40px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .temperature-container {
   text-align: center;
   margin: auto;
   font-size: 50px;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .temperature-icon {
   margin-bottom: -15px;
   padding: 0;
+  transition: transform 0.3s ease;
+}
+
+.temperature-icon:hover {
+  transform: scale(1.15) rotate(10deg);
 }
 
 .temperature-value {
@@ -137,7 +176,7 @@ ul {
   color: #fff;
   font-size: 80px;
   font-weight: 600;
-  text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 10px 20px rgba(0, 0, 0, 0.4);
 }
 
 .weather-type {
@@ -176,14 +215,33 @@ ul {
 .sunrise-additional,
 .sunset-additional {
   margin: 5px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50px;
-  padding: 8px 18px;
+  padding: 10px 20px;
   color: #fff;
   display: inline-block;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+}
+
+.air-quality-additional:hover,
+.real-feel-additional:hover,
+.humidity-additional:hover,
+.max-temperature-additional:hover,
+.min-temperature-additional:hover,
+.wind-speed-additional:hover,
+.wind-direction-additional:hover,
+.visibility-additional:hover,
+.pressure-additional:hover,
+.sunrise-additional:hover,
+.sunset-additional:hover {
+  transform: translateY(-3px) scale(1.05);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .air-quality-additional-label,
@@ -224,25 +282,32 @@ ul {
   display: inline-block;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   width: 140px;
   height: auto;
-  padding: 15px 10px;
-  margin: 8px;
+  padding: 18px 12px;
+  margin: 10px;
   color: #fff;
-  transition: transform 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .daily-forecast-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-10px) scale(1.05);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 .daily-forecast-card .daily-forecast-logo {
   font-size: 37.5px;
   margin: -10px -10px;
+  transition: transform 0.3s ease;
+}
+
+.daily-forecast-card:hover .daily-forecast-logo {
+  transform: scale(1.2);
 }
 
 .daily-forecast-card .daily-forecast-date {
@@ -397,11 +462,227 @@ ul {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideIn {
-  from { transform: translateY(-30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ─── POWER ANALYSIS (MODERNIZED) ─────────────────── */
+.power-analysis-section {
+  text-align: center;
+  padding: 20px 25px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.power-analysis-title {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.power-analysis-card {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 24px 32px;
+  min-width: 340px;
+  max-width: 550px;
+  width: 95%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.power-analysis-card:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  transition: all 0.5s ease;
+}
+
+.power-device-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.power-device-icon {
+  font-size: 42px;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+  transition: transform 0.3s ease;
+}
+
+.power-analysis-card:hover .power-device-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.power-device-info {
+  flex: 1;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.power-device-name {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.power-device-status {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.power-badge {
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.power-badge.high {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(255, 65, 108, 0.4);
+}
+
+.power-badge.medium {
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+  color: #000;
+  box-shadow: 0 0 15px rgba(247, 151, 30, 0.4);
+}
+
+.power-badge.low {
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(17, 153, 142, 0.4);
+}
+
+.power-meter-wrap {
+  margin-bottom: 20px;
+}
+
+.power-meter-bar {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.power-meter-fill {
+  height: 100%;
+  border-radius: 50px;
+  width: 0%;
+  transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.6s ease;
+  position: relative;
+}
+
+.power-meter-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%, rgba(255, 255, 255, 0.3) 100%);
+  animation: shimmer 2s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.power-meter-labels {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0 4px;
+}
+
+.power-analysis-msg {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.6;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ─── FOOTER ───────────────────────────────────── */
+.app-footer {
+  margin-top: auto;
+  padding: 40px 20px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  width: 100%;
+}
+
+.app-footer p {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 13px;
+  margin: 0;
+  letter-spacing: 1px;
+  font-weight: 400;
 }
